@@ -33,20 +33,20 @@ footer{margin-top:auto;padding-top:clamp(24px,4vh,46px);text-align:center;font-s
 @media(max-width:480px){#screen{padding:15px}.logo{width:92px}.clock{font-size:24px}.date{font-size:11px}.welcome{font-size:25px;margin-top:30px}.subhead{margin-bottom:22px}.cards{gap:8px}.card{height:100%;min-height:0;height:170px;padding:12px;border-radius:10px}.name{font-size:17px}.status{font-size:10px;margin-bottom:9px}.remaining{font-size:20px}.detail{font-size:10px;margin-top:8px}footer{padding-top:24px}}
 
 @media (orientation: portrait){
- #screen{height:100dvh;min-height:100dvh;padding:1.2vh 2.4vw}
+ #screen{height:100vh;min-height:100vh;padding:1vh 2.4vw;gap:0}
  header{gap:2vw}
- .logo{width:clamp(90px,18vw,190px);max-height:7vh}
- .clock{font-size:clamp(22px,4.2vw,46px)}
- .date{font-size:clamp(10px,1.5vw,17px);margin-top:3px}
- .welcome{font-size:clamp(23px,4vw,48px);margin:1.2vh 0 .6vh}
- .subhead{font-size:clamp(12px,1.8vw,19px);margin-bottom:1vh}
- .cards{gap:.6vh}
- .card{padding:.6vh 2vw;border-radius:10px}
- .name{font-size:clamp(16px,2.4vw,29px)}
- .status{font-size:clamp(9px,1.2vw,14px);margin-bottom:1px}
- .remaining{font-size:clamp(19px,3vw,36px)}
- .detail{font-size:clamp(9px,1.2vw,14px);margin-top:2px}
- footer{padding-top:.6vh;font-size:clamp(8px,1vw,12px)}
+ .logo{width:clamp(80px,18vw,190px);max-height:6vh}
+ .clock{font-size:clamp(20px,4.2vw,46px)}
+ .date{font-size:clamp(10px,1.5vw,17px);margin-top:2px}
+ .welcome{font-size:clamp(20px,4vw,48px);margin:.8vh 0 .4vh}
+ .subhead{font-size:clamp(11px,1.8vw,19px);margin-bottom:.6vh}
+ .cards{flex:1;min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:.55vh;width:100%;}
+ .card{height:auto;min-height:0;padding:.45vh 2vw;border-radius:10px;justify-content:space-around}
+ .name{font-size:clamp(15px,2.4vw,29px)}
+ .status{font-size:clamp(9px,1.2vw,14px);margin-bottom:0}
+ .remaining{font-size:clamp(18px,3vw,36px)}
+ .detail{font-size:clamp(9px,1.2vw,14px);margin-top:1px}
+ footer{padding-top:.4vh;font-size:clamp(8px,1vw,12px)}
 }
 @media(max-height:700px){#screen{padding-top:8px;padding-bottom:8px}.welcome{margin-top:6px}.subhead{margin-bottom:6px}.cards{gap:5px}.card{padding-top:5px;padding-bottom:5px}footer{padding-top:4px}}
 </style>
@@ -79,14 +79,33 @@ const colors=[
  {name:"HVIT",cls:"white",hex:"#f1f1f1",text:"#191919"}
 ];
 const firstFinish=10*60+30, step=30, screen=document.getElementById("screen");
-function parts(now){return Object.fromEntries(new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Oslo",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(now).map(p=>[p.type,p.value]));}
-function weekday(now){return new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Oslo",weekday:"short"}).format(now);}
+function parts(now){
+  var out={hour:"00",minute:"00",second:"00"};
+  try {
+    var f=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Oslo",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+    var a=f.formatToParts(now);
+    for(var j=0;j<a.length;j++){if(a[j].type in out)out[a[j].type]=a[j].value;}
+    if(out.hour==="24")out.hour="00";
+  } catch(e) {
+    // Fallback for older TV browsers: use the device's local time.
+    var d=new Date();
+    out.hour=String(d.getHours()).padStart(2,"0");
+    out.minute=String(d.getMinutes()).padStart(2,"0");
+    out.second=String(d.getSeconds()).padStart(2,"0");
+  }
+  return out;
+}
+function weekday(now){
+  try{return new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Oslo",weekday:"short"}).format(now);}
+  catch(e){return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date().getDay()];}
+}
 function mins(p){return +p.hour*60 + +p.minute;}
 function fmt(s){s=Math.max(0,Math.floor(s));let h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;return h?`${h}t ${String(m).padStart(2,"0")}m`: `${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;}
 function render(){
  const now=new Date(),p=parts(now),minute=mins(p),wd=weekday(now);
  document.getElementById("clock").textContent=`${p.hour}:${p.minute}:${p.second}`;
- document.getElementById("date").textContent=new Intl.DateTimeFormat("nb-NO",{timeZone:"Europe/Oslo",weekday:"long",day:"numeric",month:"long"}).format(now);
+ try{document.getElementById("date").textContent=new Intl.DateTimeFormat("nb-NO",{timeZone:"Europe/Oslo",weekday:"long",day:"numeric",month:"long"}).format(now);}
+  catch(e){document.getElementById("date").textContent=now.toLocaleDateString("nb-NO",{weekday:"long",day:"numeric",month:"long"});}
  if((wd==="Sat"||wd==="Sun")&&minute>=510&&minute<660){
   screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-helg.jpg')";
  }else if(["Mon","Tue","Wed","Thu","Fri"].includes(wd)){
