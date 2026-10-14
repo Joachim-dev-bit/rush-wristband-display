@@ -1,59 +1,366 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="no">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rush Wristband Display</title>
 <style>
-:root{color-scheme:dark;--rush:#0877e8;--bg:#050505;--panel:#17191e;--ink:#fff;--muted:#d5d9e0;--line:rgba(255,255,255,.17)}
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;font-family:Arial,Helvetica,sans-serif;background:#050505;color:#fff}
-#app{height:100vh;min-height:100vh;width:100%;overflow:hidden;background:var(--bg);color:var(--ink);padding:clamp(10px,1.5vw,22px);display:flex;flex-direction:column;gap:clamp(7px,1vh,12px)}
-header{display:flex;justify-content:space-between;align-items:center;gap:18px}
-.brand{font-weight:900;letter-spacing:.25em;font-size:clamp(16px,2vw,28px)}
-.pill{border:1px solid var(--line);border-radius:999px;padding:9px 14px;color:var(--muted);font-size:clamp(11px,1.1vw,15px);font-weight:700;letter-spacing:.1em}
-main{flex:1;min-height:0;display:flex;flex-direction:column;gap:clamp(6px,.8vh,10px);width:100%;max-width:1800px;margin:0 auto}
-.heading{text-align:center}.eyebrow{font-size:clamp(9px,.9vw,13px);font-weight:700;letter-spacing:.28em;color:var(--muted);margin-bottom:4px}.heading h1{font-size:clamp(22px,2.5vw,38px);line-height:1;margin:0;font-weight:900;letter-spacing:-.035em}
-.time-panel{align-self:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:5px 22px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
-.time-label{display:inline;font-size:clamp(9px,.8vw,11px);font-weight:700;letter-spacing:.15em;color:var(--muted);margin-right:10px}.time{display:inline;font-size:clamp(16px,1.6vw,23px);font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.035em}
-.section-label{font-size:clamp(9px,.9vw,12px);font-weight:800;letter-spacing:.2em;color:var(--muted);margin:0 0 5px 2px}
-main>section:last-child{flex:1;min-height:0;display:flex;flex-direction:column}
-.colors{display:flex;flex:1;min-height:0;flex-direction:column;gap:clamp(2px,.3vh,4px)}
-.swatch{flex:1;min-height:0;border-radius:clamp(5px,.5vw,9px);display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;padding:0 clamp(12px,2vw,28px);border:1px solid rgba(255,255,255,.18);box-shadow:0 3px 10px rgba(0,0,0,.25);font-weight:900;overflow:hidden;text-align:left}
-.swatch .name{font-size:clamp(12px,1.4vw,20px);letter-spacing:.07em;text-shadow:0 1px 3px rgba(0,0,0,.15)}
-.swatch .number{font-size:clamp(12px,1.5vw,21px);opacity:.98;letter-spacing:.04em;font-variant-numeric:tabular-nums}
-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font-size:clamp(10px,1vw,14px);font-weight:700;letter-spacing:.08em}
-.controls{position:fixed;right:16px;bottom:16px;z-index:5;background:#fff;color:#10243b;border:1px solid #d5deea;border-radius:16px;padding:14px;box-shadow:0 12px 36px rgba(0,0,0,.25);width:min(330px,calc(100vw - 32px));display:none;max-height:80vh;overflow:auto}
-.controls.open{display:block}.controls h2{font-size:16px;margin:0 0 12px}.controls label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}.controls input,.controls textarea{width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#10243b;font:inherit}.controls textarea{min-height:70px;resize:vertical}.controls button{border:0;border-radius:8px;background:#0877e8;color:#fff;font-weight:800;padding:10px 12px;margin-top:12px;cursor:pointer;width:100%}.controls .secondary{background:#e7eef7;color:#17324f}.gear{position:fixed;right:14px;top:14px;z-index:6;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:12px;padding:10px 13px;font-size:18px;cursor:pointer;opacity:.75}.gear:hover{opacity:1}
-@media(max-width:760px){#app{padding:10px;gap:7px}.brand{letter-spacing:.12em}.pill{padding:6px 9px}.swatch .name,.swatch .number{font-size:clamp(11px,2.5vw,16px)}}
-@media(max-height:600px){#app{padding:8px;gap:5px}main{gap:5px}.heading h1{font-size:22px}.time-panel{padding:3px 14px}.swatch .name,.swatch .number{font-size:12px}footer{font-size:9px}}
+:root {
+  --bg: #050505;
+  --panel: #171717;
+  --ink: #ffffff;
+  --muted: #b8b8b8;
+  --line: rgba(255,255,255,.16);
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+body { min-height: 100vh; }
+#app {
+  min-height: 100vh;
+  padding: clamp(12px, 2vw, 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background-color: #050505;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.brand {
+  font-size: clamp(24px, 3vw, 42px);
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+.pill {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 14px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 13px;
+}
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+.heading { text-align: center; }
+.heading h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 3.2vw, 46px);
+  font-weight: 900;
+}
+.heading p { margin: 0; color: var(--muted); }
+.time-panel {
+  align-self: center;
+  background: rgba(0,0,0,.88);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 24px;
+  text-align: center;
+  min-width: 230px;
+}
+.time-label {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .15em;
+  font-weight: 700;
+}
+.clock {
+  font-size: clamp(26px, 3vw, 42px);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.colors {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.swatch {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(95px, .6fr) minmax(110px, .7fr);
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #000;
+  border: 1px solid rgba(255,255,255,.14);
+  min-height: 55px;
+}
+.swatch.active {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+  background: #101010;
+}
+.color-name { font-weight: 900; font-size: clamp(15px, 1.5vw, 21px); }
+.color-time, .countdown {
+  text-align: right;
+  font-weight: 800;
+  font-size: clamp(14px, 1.4vw, 19px);
+  font-variant-numeric: tabular-nums;
+}
+.countdown { color: #f4d35e; }
+.finished { color: #ff6961; }
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12px;
+}
+.dot {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+footer { text-align: center; color: var(--muted); font-size: 12px; }
+#settingsButton {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 10;
+  background: #222;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+}
+#settings {
+  display: none;
+  position: fixed;
+  z-index: 11;
+  right: 12px;
+  bottom: 62px;
+  width: min(320px, calc(100vw - 24px));
+  padding: 16px;
+  border: 1px solid #555;
+  border-radius: 12px;
+  background: #171717;
+  box-shadow: 0 8px 30px #000;
+}
+#settings label { display: block; margin: 10px 0 5px; color: #ddd; }
+#settings input, #settings select {
+  width: 100%;
+  padding: 8px;
+  background: #080808;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 6px;
+}
+#settings button {
+  margin-top: 12px;
+  padding: 9px 12px;
+  background: #0877e8;
+  border: 0;
+  border-radius: 6px;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+@media(max-width: 600px) {
+  .swatch { grid-template-columns: 1fr 1fr; gap: 5px 10px; }
+  .color-time { text-align: left; }
+  .countdown { grid-column: 1 / -1; text-align: left; }
+}
 </style>
 </head>
 <body>
 <div id="app">
-<header><div class="brand">RUSH <span style="font-weight:500;letter-spacing:.16em">HAUGESUND</span></div><div class="pill">WRISTBAND DISPLAY</div></header>
-<main>
-<section class="heading"><div class="eyebrow">VELKOMMEN TIL PARKEN</div><h1>DAGENS ARMBÅND</h1></section>
-<section class="time-panel"><div class="time-label">ÅPNINGSTID</div><div class="time" id="hours">09:00 – 20:00</div></section>
-<section><div class="section-label">FARGEREKKEFØLGE</div><div class="colors" id="colors"></div></section>
-</main>
-<footer><span>HOPP HØYT. HA DET GØY.</span><span id="date"></span></footer>
-<button class="gear" id="gear" aria-label="Åpne innstillinger" title="Innstillinger">⚙</button>
-<aside class="controls" id="controls"><h2>Tilpass displayet</h2><label for="bg">Bakgrunnsfarge (HEX)</label><input id="bg" value="#050505" maxlength="7"><label for="start">Starttid</label><input id="start" value="09:00:00" type="time" step="1"><label for="end">Sluttid</label><input id="end" value="20:00:00" type="time" step="1"><label for="sequence">Fargerekkefølge (kommaseparert)</label><textarea id="sequence">Gold,gold,pink,red,grey,green,orange,blue,yellow,purple,black,white,pink,red,grey,green,orange,blue,yellow,purple,black,white</textarea><button id="apply">Oppdater display</button><button class="secondary" id="share">Kopier lenke med innstillingene</button><button class="secondary" id="hide">Skjul innstillinger</button></aside>
+  <header>
+    <div class="brand">RUSH <span style="color:#0877e8">WRISTBANDS</span></div>
+    <div class="pill" id="dayLabel">DAGENS ARMBÅND</div>
+  </header>
+
+  <main>
+    <div class="heading">
+      <h1>DAGENS ARMBÅND</h1>
+      <p>Følg tidene for dagens armbåndsfarger</p>
+    </div>
+
+    <div class="time-panel">
+      <div class="time-label">NÅVÆRENDE TID</div>
+      <div class="clock" id="clock">--:--:--</div>
+    </div>
+
+    <section class="colors" id="colors"></section>
+    <div class="legend">
+      <span><span class="dot" style="background:#ff4fb8"></span>Pink</span>
+      <span><span class="dot" style="background:#ed3030"></span>Red</span>
+      <span><span class="dot" style="background:#c0c0c0"></span>Silver</span>
+      <span><span class="dot" style="background:#22b95c"></span>Green</span>
+      <span><span class="dot" style="background:#ff8c20"></span>Orange</span>
+      <span><span class="dot" style="background:#1688ff"></span>Blue</span>
+      <span><span class="dot" style="background:#ffe333"></span>Yellow</span>
+      <span><span class="dot" style="background:#a64dff"></span>Purple</span>
+      <span><span class="dot" style="background:#222;border:1px solid #777"></span>Black</span>
+      <span><span class="dot" style="background:#fff"></span>White</span>
+    </div>
+  </main>
+  <footer>Rush Trampolinepark · Tidene følger lokal norsk tid</footer>
 </div>
+
+<button id="settingsButton" title="Innstillinger">⚙</button>
+<div id="settings">
+  <strong>Innstillinger</strong>
+  <label for="startTime">Starttid</label>
+  <input id="startTime" type="time" value="10:30">
+  <label for="interval">Minutter mellom fargene</label>
+  <select id="interval">
+    <option value="30" selected>30 minutter</option>
+  </select>
+  <button id="applySettings">Lagre innstillinger</button>
+</div>
+
 <script>
-const palette={gold:{hex:'#D4AF37',text:'#171717',label:'GULL'},pink:{hex:'#FF69B4',text:'#27101d',label:'ROSA'},red:{hex:'#F04444',text:'#fff',label:'RØD'},grey:{hex:'#A8B0BB',text:'#111827',label:'GRÅ'},gray:{hex:'#A8B0BB',text:'#111827',label:'GRÅ'},green:{hex:'#35C759',text:'#102317',label:'GRØNN'},orange:{hex:'#FF8C24',text:'#281707',label:'ORANSJE'},blue:{hex:'#1685FF',text:'#fff',label:'BLÅ'},yellow:{hex:'#FFE34D',text:'#28220a',label:'GUL'},purple:{hex:'#A66CFF',text:'#fff',label:'LILLA'},black:{hex:'#17191E',text:'#fff',label:'SVART'},white:{hex:'#F7F9FC',text:'#152238',label:'HVIT'}};
-const params=new URLSearchParams(location.search);
-const getParam=(k,f)=>params.get(k)||f;
-const initialSequence=getParam('sequence','Gold,gold,pink,red,grey,green,orange,blue,yellow,purple,black,white,pink,red,grey,green,orange,blue,yellow,purple,black,white');
-const $=id=>document.getElementById(id);
-function normalizeTime(v){return (v||'09:00:00').length===5?v+':00':v}
-function render(){const bg=$('bg').value.trim();if(/^#[0-9a-fA-F]{6}$/.test(bg)){document.documentElement.style.setProperty('--bg',bg);document.body.style.background=bg;$('app').style.background=bg;}
-const start=normalizeTime($('start').value),end=normalizeTime($('end').value);$('hours').textContent=start.slice(0,5)+' – '+end.slice(0,5);
-const names=$('sequence').value.split(',').map(s=>s.trim()).filter(Boolean);const root=$('colors');root.innerHTML='';const toMinutes=t=>{const parts=t.split(':').map(Number);return parts[0]*60+(parts[1]||0)};const fromMinutes=m=>{const v=((Math.round(m)%1440)+1440)%1440;return String(Math.floor(v/60)).padStart(2,'0')+':'+String(v%60).padStart(2,'0')};const startM=toMinutes(start),endM=toMinutes(end)+(toMinutes(end)<=startM?1440:0),step=names.length?(endM-startM)/names.length:0;names.forEach((name,i)=>{const key=name.toLowerCase();const c=palette[key]||{hex:'#0877e8',text:'#fff',label:name.toUpperCase()};const el=document.createElement('div');el.className='swatch';el.style.background=c.hex;el.style.color=c.text;el.innerHTML='<span class="number"></span><span class="name"></span>';el.querySelector('.number').textContent=fromMinutes(startM+i*step);el.querySelector('.name').textContent=c.label;el.title='Armbånd '+(i+1)+': '+fromMinutes(startM+i*step);root.appendChild(el)});
-$('date').textContent=new Intl.DateTimeFormat('no-NO',{weekday:'long',day:'numeric',month:'long'}).format(new Date()).toUpperCase();}
-$('bg').value=getParam('bg','#050505');$('start').value=normalizeTime(getParam('startTime','09:00:00'));$('end').value=normalizeTime(getParam('endTime','20:00:00'));$('sequence').value=initialSequence;
-$('gear').addEventListener('click',()=>$('controls').classList.toggle('open'));$('hide').addEventListener('click',()=>$('controls').classList.remove('open'));$('apply').addEventListener('click',()=>{render();const p=new URLSearchParams();p.set('bg',$('bg').value);p.set('startTime',normalizeTime($('start').value));p.set('endTime',normalizeTime($('end').value));p.set('sequence',$('sequence').value.split(',').map(s=>s.trim()).filter(Boolean).join(','));history.replaceState(null,'',location.pathname+'?'+p.toString())});$('share').addEventListener('click',async()=>{const p=new URLSearchParams();p.set('bg',$('bg').value);p.set('startTime',normalizeTime($('start').value));p.set('endTime',normalizeTime($('end').value));p.set('sequence',$('sequence').value.split(',').map(s=>s.trim()).filter(Boolean).join(','));const link=location.origin+location.pathname+'?'+p.toString();try{await navigator.clipboard.writeText(link);$('share').textContent='Lenke kopiert!'}catch(e){prompt('Kopier denne lenken:',link)}});render();
+const palette = [
+  { name: "Pink", color: "#ff4fb8" },
+  { name: "Red", color: "#ed3030" },
+  { name: "Silver", color: "#c0c0c0" },
+  { name: "Green", color: "#22b95c" },
+  { name: "Orange", color: "#ff8c20" },
+  { name: "Blue", color: "#1688ff" },
+  { name: "Yellow", color: "#ffe333" },
+  { name: "Purple", color: "#a64dff" },
+  { name: "Black", color: "#222222" },
+  { name: "White", color: "#ffffff" }
+];
+
+let startMinutes = 10 * 60 + 30;
+const intervalMinutes = 30;
+
+const app = document.getElementById("app");
+const colorsEl = document.getElementById("colors");
+
+function localMinutes(date) {
+  return date.getHours() * 60 + date.getMinutes();
+}
+function timeText(totalMinutes) {
+  const m = ((totalMinutes % 1440) + 1440) % 1440;
+  return String(Math.floor(m / 60)).padStart(2, "0") + ":" +
+         String(m % 60).padStart(2, "0");
+}
+function scheduleForToday(now) {
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
+  const nowMin = localMinutes(now);
+  const startIndex = Math.floor((nowMin - startMinutes) / intervalMinutes);
+  const firstIndex = startIndex - 1;
+  const entries = [];
+  for (let i = firstIndex; i < firstIndex + 50; i++) {
+    const absoluteMin = startMinutes + i * intervalMinutes;
+    const date = new Date(todayStart);
+    date.setMinutes(absoluteMin);
+    entries.push({
+      index: i,
+      color: palette[((i % palette.length) + palette.length) % palette.length],
+      date,
+      minutes: absoluteMin
+    });
+  }
+  return entries;
+}
+function render() {
+  const now = new Date();
+  document.getElementById("clock").textContent =
+    now.toLocaleTimeString("no-NO", { hour12: false });
+  document.getElementById("dayLabel").textContent =
+    now.toLocaleDateString("no-NO", { weekday: "long", day: "numeric", month: "long" });
+
+  const day = now.getDay();
+  const minutes = localMinutes(now);
+  const weekendImageTime = (day === 0 || day === 6) &&
+    minutes >= 8 * 60 + 30 && minutes < 11 * 60;
+
+  if (weekendImageTime) {
+    app.style.backgroundImage = "linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,.45)), url('Rush-helg.jpg')";
+  } else if (day >= 1 && day <= 5) {
+    app.style.backgroundImage = "linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.68)), url('Rush-ukedag.jpg')";
+  } else {
+    app.style.backgroundImage = "none";
+  }
+
+  const entries = scheduleForToday(now);
+  const current = entries.filter(e => e.date <= now).pop();
+  const upcoming = entries.filter(e => e.date > now).slice(0, 20);
+
+  colorsEl.innerHTML = "";
+  const display = current ? [current, ...upcoming] : upcoming.slice(0, 20);
+
+  display.forEach(entry => {
+    const diff = Math.floor((entry.date.getTime() - now.getTime()) / 1000);
+    const isCurrent = entry.date <= now &&
+      now.getTime() < entry.date.getTime() + intervalMinutes * 60000;
+    const row = document.createElement("div");
+    row.className = "swatch" + (isCurrent ? " active" : "");
+    const name = document.createElement("div");
+    name.className = "color-name";
+    name.style.color = entry.color.color;
+    name.textContent = entry.color.name;
+    const time = document.createElement("div");
+    time.className = "color-time";
+    time.textContent = timeText(entry.minutes);
+    const count = document.createElement("div");
+    count.className = "countdown";
+
+    if (isCurrent) {
+      count.textContent = "FERDIG OM " + formatDuration(
+        Math.max(0, Math.floor((entry.date.getTime() + intervalMinutes * 60000 - now.getTime()) / 1000))
+      );
+    } else if (diff > 0) {
+      count.textContent = "Starter om " + formatDuration(diff);
+    } else {
+      count.textContent = "FERDIG";
+      count.classList.add("finished");
+    }
+    row.append(name, time, count);
+    colorsEl.appendChild(row);
+  });
+}
+function formatDuration(seconds) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  if (h > 0) return h + "t " + String(m).padStart(2, "0") + "m";
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+document.getElementById("settingsButton").addEventListener("click", () => {
+  const settings = document.getElementById("settings");
+  settings.style.display = settings.style.display === "block" ? "none" : "block";
+});
+document.getElementById("applySettings").addEventListener("click", () => {
+  const val = document.getElementById("startTime").value || "10:30";
+  const parts = val.split(":").map(Number);
+  startMinutes = parts[0] * 60 + parts[1];
+  document.getElementById("settings").style.display = "none";
+  render();
+});
+render();
+setInterval(render, 1000);
 </script>
 </body>
 </html>
