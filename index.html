@@ -17,8 +17,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;wi
 .date{font-size:clamp(13px,1.15vw,17px);color:#cbd3e3;margin-top:7px;text-shadow:0 2px 7px rgba(4,8,20,.55)}
 .welcome{margin:clamp(10px,1.6vh,24px) 0 clamp(6px,1vh,14px);text-align:center;font-size:clamp(25px,3.3vw,48px);line-height:1.03;font-weight:800;letter-spacing:.015em;text-transform:uppercase;color:#e4e7f2;text-shadow:0 2px 10px rgba(5,9,22,.62)}
 .subhead{text-align:center;font-size:clamp(13px,1.2vw,18px);font-weight:600;color:#cbd3e3;margin:0 0 clamp(8px,1.2vh,18px);text-shadow:0 2px 7px rgba(5,9,22,.6)}
-.cards{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:clamp(6px,.7vh,12px);width:100%;margin:0 auto;max-width:1900px}
-.card{height:100%;min-height:0;height:clamp(250px,32vh,370px);padding:clamp(20px,2vw,31px);border-radius:15px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 10px 28px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.20);overflow:hidden}
+.cards{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:clamp(6px,.7vh,12px);width:100%;margin:0 auto;max-width:1900px;flex:1;min-height:0}
+.card{height:100%;min-height:0;padding:clamp(8px,1.4vw,24px);border-radius:15px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 10px 28px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.20);overflow:hidden}
 .name{font-size:clamp(20px,2.2vw,33px);font-weight:900;letter-spacing:.025em}
 .status{font-size:clamp(13px,1.12vw,17px);font-weight:800;letter-spacing:.12em;margin-bottom:15px}
 .remaining{font-size:clamp(26px,2.85vw,43px);font-weight:900;line-height:1.08;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -66,93 +66,90 @@ footer{margin-top:auto;padding-top:clamp(24px,4vh,46px);text-align:center;font-s
   <footer>RUSH TRAMPOLINEPARK</footer>
 </div>
 <script>
-const colors=[
- {name:"PINK",cls:"pink",hex:"#ed168f",text:"#fff"},
- {name:"RØD",cls:"red",hex:"#ed3030",text:"#fff"},
- {name:"SØLV",cls:"silver",hex:"#c0c0c0",text:"#191919"},
- {name:"GRØNN",cls:"green",hex:"#22b95c",text:"#101010"},
- {name:"ORANSJE",cls:"orange",hex:"#ff8c20",text:"#191919"},
- {name:"BLÅ",cls:"blue",hex:"#1688ff",text:"#fff"},
- {name:"GUL",cls:"yellow",hex:"#ffe333",text:"#191919"},
- {name:"LILLA",cls:"purple",hex:"#a64dff",text:"#fff"},
- {name:"SVART",cls:"black",hex:"#242424",text:"#fff"},
- {name:"HVIT",cls:"white",hex:"#f1f1f1",text:"#191919"}
+/* ES5-compatible script for older Samsung TV browsers */
+var colors=[
+ {name:"PINK",hex:"#ed168f",text:"#fff"},
+ {name:"RØD",hex:"#ed3030",text:"#fff"},
+ {name:"SØLV",hex:"#c0c0c0",text:"#191919"},
+ {name:"GRØNN",hex:"#22b95c",text:"#101010"},
+ {name:"ORANSJE",hex:"#ff8c20",text:"#191919"},
+ {name:"BLÅ",hex:"#1688ff",text:"#fff"},
+ {name:"GUL",hex:"#ffe333",text:"#191919"},
+ {name:"LILLA",hex:"#a64dff",text:"#fff"},
+ {name:"SVART",hex:"#242424",text:"#fff"},
+ {name:"HVIT",hex:"#f1f1f1",text:"#191919"}
 ];
-const firstFinish=10*60+30, step=30, screen=document.getElementById("screen");
+var firstFinish=630, step=30;
+var screen=document.getElementById("screen");
+function pad2(n){return n<10?"0"+n:String(n);}
 function parts(now){
-  var out={hour:"00",minute:"00",second:"00"};
-  try {
-    var f=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Oslo",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
-    var a=f.formatToParts(now);
-    for(var j=0;j<a.length;j++){if(a[j].type in out)out[a[j].type]=a[j].value;}
-    if(out.hour==="24")out.hour="00";
-  } catch(e) {
-    // Fallback for older TV browsers: use the device's local time.
-    var d=new Date();
-    out.hour=String(d.getHours()).padStart(2,"0");
-    out.minute=String(d.getMinutes()).padStart(2,"0");
-    out.second=String(d.getSeconds()).padStart(2,"0");
-  }
-  return out;
+ var d=new Date();
+ return {hour:pad2(d.getHours()),minute:pad2(d.getMinutes()),second:pad2(d.getSeconds())};
 }
 function weekday(now){
-  try{return new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Oslo",weekday:"short"}).format(now);}
-  catch(e){return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date().getDay()];}
+ return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][now.getDay()];
 }
-function mins(p){return +p.hour*60 + +p.minute;}
-function fmt(s){s=Math.max(0,Math.floor(s));let h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;return h?`${h}t ${String(m).padStart(2,"0")}m`: `${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;}
+function mins(p){return Number(p.hour)*60+Number(p.minute);}
+function fmt(s){
+ s=Math.max(0,Math.floor(s));
+ var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+ return h ? h+"t "+pad2(m)+"m" : pad2(m)+":"+pad2(sec);
+}
 function render(){
- const now=new Date(),p=parts(now),minute=mins(p),wd=weekday(now);
- document.getElementById("clock").textContent=`${p.hour}:${p.minute}:${p.second}`;
- try{document.getElementById("date").textContent=new Intl.DateTimeFormat("nb-NO",{timeZone:"Europe/Oslo",weekday:"long",day:"numeric",month:"long"}).format(now);}
-  catch(e){document.getElementById("date").textContent=now.toLocaleDateString("nb-NO",{weekday:"long",day:"numeric",month:"long"});}
- if((wd==="Sat"||wd==="Sun")&&minute>=510&&minute<660){
-  screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-helg.jpg')";
- }else if(["Mon","Tue","Wed","Thu","Fri"].includes(wd)){
-  screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-ukedag.jpg')";
- }else{screen.style.backgroundImage="none";}
- // Fixed finish schedule. The nearest finish is always the leftmost card.
- // When a color expires, it stays in the leftmost position as FERDIG for 2 minutes.
- // After that it disappears and the next color joins the right side.
- const k=Math.floor((minute-firstFinish)/step);
- let upcoming=[];
- let lastIndex=null;
- let recentlyFinished=false;
- let completedAgeSeconds=Infinity;
-
- if(minute<firstFinish){
-   for(let i=0;i<4;i++){
-     const finish=firstFinish+i*step;
-     upcoming.push({i,finish,seconds:(finish-minute)*60-(+p.second)});
+ var now=new Date(),p=parts(now),minute=mins(p),wd=weekday(now);
+ document.getElementById("clock").textContent=p.hour+":"+p.minute+":"+p.second;
+ var days=["søndag","mandag","tirsdag","onsdag","torsdag","fredag","lørdag"];
+ var months=["januar","februar","mars","april","mai","juni","juli","august","september","oktober","november","desember"];
+ document.getElementById("date").textContent=days[now.getDay()]+" "+now.getDate()+". "+months[now.getMonth()];
+ if(wd==="Sat"||wd==="Sun"){
+   if(minute>=510 && minute<660){
+     screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-helg.jpg')";
+   } else {
+     screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-helg.jpg')";
    }
  } else {
-   const elapsedSinceFinish=(minute-firstFinish)-k*step;
-   completedAgeSeconds=elapsedSinceFinish*60 + (+p.second);
+   screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-ukedag.jpg')";
+ }
+ var k=Math.floor((minute-firstFinish)/step);
+ var upcoming=[],lastIndex=null,recentlyFinished=false;
+ if(minute<firstFinish){
+   for(var i=0;i<4;i++){
+     var finish=firstFinish+i*step;
+     upcoming.push({i:i,finish:finish,seconds:(finish-minute)*60-Number(p.second)});
+   }
+ } else {
+   var elapsedSinceFinish=(minute-firstFinish)-k*step;
+   var completedAgeSeconds=elapsedSinceFinish*60+Number(p.second);
    recentlyFinished=completedAgeSeconds<120;
    lastIndex=((k%colors.length)+colors.length)%colors.length;
-
-   const count=recentlyFinished?3:4;
-   for(let i=k+1;i<k+1+count;i++){
-     const finish=firstFinish+i*step;
-     upcoming.push({i,finish,seconds:(finish-minute)*60-(+p.second)});
+   var count=recentlyFinished?3:4;
+   for(var j=k+1;j<k+1+count;j++){
+     var f=firstFinish+j*step;
+     upcoming.push({i:j,finish:f,seconds:(f-minute)*60-Number(p.second)});
    }
  }
- const cards=document.getElementById("cards");cards.innerHTML="";
+ var cards=document.getElementById("cards");
+ cards.innerHTML="";
  if(recentlyFinished && lastIndex!==null){
-  const d=colors[lastIndex],done=document.createElement("article");done.className="card done";
-  done.style.order="-1";
-  done.innerHTML=`<div class="name">${d.name}</div><div><div class="status">STATUS</div><div class="remaining">FERDIG</div><div class="detail">Ferdigtid passert</div></div>`;
-  cards.appendChild(done);
+   var d=colors[lastIndex],done=document.createElement("article");
+   done.className="card done";
+   done.innerHTML='<div class="name">'+d.name+'</div><div><div class="status">STATUS</div><div class="remaining">FERDIG</div><div class="detail">Ferdigtid passert</div></div>';
+   cards.appendChild(done);
  }
- upcoming.forEach(it=>{
-  const c=colors[((it.i%colors.length)+colors.length)%colors.length];
-  const finish=(it.finish%1440+1440)%1440, t=`${String(Math.floor(finish/60)).padStart(2,"0")}:${String(Math.floor(finish%60)).padStart(2,"0")}`;
-  const el=document.createElement("article");el.className="card";el.style.background=c.hex;el.style.color=c.text;
-  el.innerHTML=`<div class="name">${c.name}</div><div><div class="status">FERDIG OM</div><div class="remaining">${fmt(it.seconds)}</div><div class="detail">Ferdig kl. ${t}</div></div>`;
-  cards.appendChild(el);
- });
+ for(var n=0;n<upcoming.length;n++){
+   var it=upcoming[n],c=colors[((it.i%colors.length)+colors.length)%colors.length];
+   var ftime=(it.finish%1440+1440)%1440;
+   var t=pad2(Math.floor(ftime/60))+":"+pad2(ftime%60);
+   var el=document.createElement("article");
+   el.className="card";
+   el.style.backgroundColor=c.hex;
+   el.style.color=c.text;
+   el.innerHTML='<div class="name">'+c.name+'</div><div><div class="status">FERDIG OM</div><div class="remaining">'+fmt(it.seconds)+'</div><div class="detail">Ferdig kl. '+t+'</div></div>';
+   cards.appendChild(el);
+ }
 }
-render();setInterval(render,1000);
+render();
+setInterval(render,1000);
 </script>
 </body>
 </html>
