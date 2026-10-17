@@ -40,7 +40,7 @@ footer{margin-top:auto;padding-top:clamp(24px,4vh,46px);text-align:center;font-s
  .date{font-size:clamp(10px,1.5vw,17px);margin-top:2px}
  .welcome{font-size:clamp(20px,4vw,48px);margin:.8vh 0 .4vh}
  .subhead{font-size:clamp(11px,1.8vw,19px);margin-bottom:.6vh}
- .cards{flex:0 0 auto;height:58vh;min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:.7vh;width:100%;max-width:100%;}
+ .cards{flex:0 0 auto;height:58vh;min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:1.5vh;width:94%;max-width:100%;margin-left:auto;margin-right:auto;}
  .card{height:auto;min-height:0;padding:1vh 3vw;border-radius:10px;justify-content:space-evenly;gap:.3vh}
  .name{font-size:clamp(76px,10.4vw,120px);line-height:1.0}
  .status{font-size:clamp(52px,6.4vw,76px);line-height:1.0;margin-bottom:0;letter-spacing:.04em}
@@ -52,7 +52,7 @@ footer{margin-top:auto;padding-top:clamp(24px,4vh,46px);text-align:center;font-s
 
 /* TV-LESBARHET: siste regler overstyrer små mobilregler i Samsung-nettleseren */
 @media (max-width: 900px), (max-aspect-ratio: 3/4), (orientation: portrait) {
-  .cards { gap: 8px !important; }
+  .cards { gap: 1.5vh !important; width: 94% !important; margin-left: auto !important; margin-right: auto !important; }
   .card { padding: 12px 18px !important; justify-content: space-around !important; }
   .name { font-size: 34px !important; line-height: 1.05 !important; }
   .status { font-size: 27px !important; line-height: 1.05 !important; letter-spacing: .04em !important; margin-bottom: 2px !important; }
