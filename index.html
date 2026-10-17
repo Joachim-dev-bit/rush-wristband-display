@@ -40,13 +40,13 @@ footer{margin-top:auto;padding-top:clamp(24px,4vh,46px);text-align:center;font-s
  .date{font-size:clamp(10px,1.5vw,17px);margin-top:2px}
  .welcome{font-size:clamp(20px,4vw,48px);margin:.8vh 0 .4vh}
  .subhead{font-size:clamp(11px,1.8vw,19px);margin-bottom:.6vh}
- .cards{flex:1;min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:.55vh;width:100%;}
- .card{height:auto;min-height:0;padding:.45vh 2vw;border-radius:10px;justify-content:space-around}
- .name{font-size:clamp(15px,2.4vw,29px)}
- .status{font-size:clamp(9px,1.2vw,14px);margin-bottom:0}
- .remaining{font-size:clamp(18px,3vw,36px)}
- .detail{font-size:clamp(9px,1.2vw,14px);margin-top:1px}
- footer{padding-top:.4vh;font-size:clamp(8px,1vw,12px)}
+ .cards{flex:1;min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:.45vh;width:100%;max-width:100%;}
+ .card{height:auto;min-height:0;padding:.25vh 2.5vw;border-radius:9px;justify-content:space-evenly;gap:0}
+ .name{font-size:clamp(22px,3.6vw,42px);line-height:1.05}
+ .status{font-size:clamp(13px,1.8vw,21px);margin-bottom:0;letter-spacing:.09em}
+ .remaining{font-size:clamp(30px,5vw,58px);line-height:1.05}
+ .detail{font-size:clamp(13px,1.8vw,21px);margin-top:2px}
+ footer{padding-top:.25vh;font-size:clamp(10px,1.3vw,16px)}
 }
 @media(max-height:700px){#screen{padding-top:8px;padding-bottom:8px}.welcome{margin-top:6px}.subhead{margin-bottom:6px}.cards{gap:5px}.card{padding-top:5px;padding-bottom:5px}footer{padding-top:4px}}
 </style>
@@ -101,15 +101,8 @@ function render(){
  var days=["søndag","mandag","tirsdag","onsdag","torsdag","fredag","lørdag"];
  var months=["januar","februar","mars","april","mai","juni","juli","august","september","oktober","november","desember"];
  document.getElementById("date").textContent=days[now.getDay()]+" "+now.getDate()+". "+months[now.getMonth()];
- if(wd==="Sat"||wd==="Sun"){
-   if(minute>=510 && minute<660){
-     screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-helg.jpg')";
-   } else {
-     screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-helg.jpg')";
-   }
- } else {
-   screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-ukedag.jpg')";
- }
+ // Vanlig Rush-bakgrunn på denne testversjonen. Minisprett-bakgrunnen legges inn i den automatiske helgevisningen senere.
+ screen.style.backgroundImage="url('https://joachim-dev-bit.github.io/rush-wristband-display/Rush-ukedag.jpg')";
  var k=Math.floor((minute-firstFinish)/step);
  var upcoming=[],lastIndex=null,recentlyFinished=false;
  if(minute<firstFinish){
