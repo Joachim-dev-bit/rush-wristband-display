@@ -49,6 +49,18 @@ footer{margin-top:auto;padding-top:clamp(24px,4vh,46px);text-align:center;font-s
  footer{padding-top:1vh;font-size:clamp(11px,1.5vw,18px)}
 }
 @media(max-height:700px){#screen{padding-top:8px;padding-bottom:8px}.welcome{margin-top:6px}.subhead{margin-bottom:6px}.cards{gap:5px}.card{padding-top:5px;padding-bottom:5px}footer{padding-top:4px}}
+
+/* TV-LESBARHET: siste regler overstyrer små mobilregler i Samsung-nettleseren */
+@media (max-width: 900px), (max-aspect-ratio: 3/4), (orientation: portrait) {
+  .cards { gap: 8px !important; }
+  .card { padding: 12px 18px !important; justify-content: space-around !important; }
+  .name { font-size: 34px !important; line-height: 1.05 !important; }
+  .status { font-size: 27px !important; line-height: 1.05 !important; letter-spacing: .04em !important; margin-bottom: 2px !important; }
+  .remaining { font-size: 54px !important; line-height: 1.05 !important; }
+  .done .remaining { font-size: 54px !important; }
+  .detail { font-size: 24px !important; line-height: 1.08 !important; margin-top: 4px !important; }
+}
+
 </style>
 </head>
 <body>
